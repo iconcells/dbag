@@ -1,0 +1,89 @@
+apply plugin: 'android'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion "19.0.2"
+
+  defaultConfig {
+    minSdkVersion 18
+    targetSdkVersion 19
+    versionCode 1
+    versionName "0.0.1"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+  buildTypes {
+    debug {
+      runProguard false
+    }
+    release {
+      runProguard true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
+    }
+  }
+
+  packagingOptions {
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+  }
+
+  lintOptions {
+    disable 'InvalidPackage'
+  }
+}
+
+dependencies {
+  compile 'com.android.support:support-v4:19.0.1'
+  compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+  compile 'com.squareup.mortar:mortar:0.7'
+  compile 'com.jakewharton:butterknife:4.0.1'
+  compile 'com.netflix.rxjava:rxjava-core:0.16.+'
+  compile 'com.squareup.flow:flow:0.4'
+  compile 'com.google.code.gson:gson:2.2.4'
+  compile 'nl.qbusict:cupboard:1.0.4'
+}
+
+pmd {
+  toolVersion = '5.1.0'
+}
+
+def compilePath = project.configurations.compile.asPath
+if (compilePath.contains(File.pathSeparator)) {
+  compilePath = compilePath.split(File.pathSeparator)
+} else if (compilePath.isEmpty()) {
+  compilePath = android.sourceSets.main.java.srcDirs
+}
+
+task findbugs(type: FindBugs) {
+  excludeFilter file('config/findbugs/exclude.xml')
+  classes = fileTree('build/classes/debug')
+  source = fileTree('src/main/java')
+  println compilePath.toString()
+  classpath = files()
+  effort = 'max'
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+task pmd(type: Pmd) {
+  ruleSets = ["java-android",
+      "java-basic",
+      "java-braces",
+      "java-strings",
+      "java-unnecessary",
+      "java-unusedcode",
+      "java-sunsecure"]
+  source = fileTree('src/main/java')
+}
+
+task findbugsWrapper(dependsOn: 'findbugs') {}
+task pmdWrapper(dependsOn: 'pmd') {}
+
+check.dependsOn findbugsWrapper
+check.dependsOn pmdWrapper
