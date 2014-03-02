@@ -5,6 +5,7 @@ import com.plomb.plomb.ActionBarModule;
 import com.plomb.plomb.ActionBarOwner;
 import com.plomb.plomb.screen.BeaconsListScreen;
 import com.plomb.plomb.screen.ProfileScreen;
+import com.plomb.plomb.screen.StatusScreen;
 import com.plomb.plomb.util.FlowOwner;
 import dagger.Provides;
 import flow.Flow;
@@ -53,7 +54,7 @@ public class Main implements Blueprint {
     }
 
     @Override protected Blueprint getFirstScreen() {
-      return new BeaconsListScreen();
+      return new StatusScreen();
     }
 
     //TODO: place this in a DrawerOwner type class.
@@ -61,10 +62,13 @@ public class Main implements Blueprint {
       if (this.position != position) {
         switch (position) {
           case 0:
-            super.showScreen(new BeaconsListScreen(), null);
+            super.showScreen(new StatusScreen(), null);
             this.position = position;
             break;
           case 1:
+            super.showScreen(new BeaconsListScreen(), null);
+            this.position = position;
+          case 2:
             super.showScreen(new ProfileScreen(), null);
             this.position = position;
             break;

@@ -68,15 +68,19 @@ public class BeaconsListScreen implements Blueprint {
       boolean drawerEnabled = true;
       String title = "Beacon List";
       actionBarOwner.setConfig(new ActionBarOwner.Config(true, hasUp, drawerEnabled, title, null));
-      bus.register(this);
-      registered = true;
+      //bus.register(this);
+      //registered = true;
     }
 
     @Override protected void onSave(Bundle outState) {
-      super.onSave(outState);
-      if (registered) {
-        bus.unregister(this);
+      try {
+        if (registered) {
+          bus.unregister(this);
+        }
+      } catch (IllegalArgumentException e) {
+        //do nothing
       }
+      super.onSave(outState);
     }
 
     public void onBeaconSelected(Beacon beacon) {
@@ -92,7 +96,10 @@ public class BeaconsListScreen implements Blueprint {
       for (DeviceSummary device : devices) {
         beacons.add(new Beacon(device.address, device.name, device.rssi));
       }
-      getView().showBeacons(beacons);
+      BeaconsListView beaconListView = getView();
+      if (beaconListView != null) {
+        getView().showBeacons(beacons);
+      }
     }
 
     @Subscribe public void onBeaconListRefreshed(DeviceListRefreshEvent event) {

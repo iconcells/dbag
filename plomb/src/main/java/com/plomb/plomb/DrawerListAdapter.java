@@ -18,7 +18,7 @@ public class DrawerListAdapter extends BaseAdapter {
   public DrawerListAdapter(Context context) {
     inflater = LayoutInflater.from(context);
     items = new String[] {
-        "Beacons", "Profile"
+        "Status", "Beacons", "Profile"
     };
     selected = 0;
   }
