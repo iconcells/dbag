@@ -2,6 +2,7 @@ package model;
 
 import com.plomb.plomb.core.MainThread;
 import dagger.Provides;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -22,18 +23,19 @@ public class Beacons {
     this.mainThread = mainThread;
     this.messagePollThread = messagePollThread;
 
-    Beacon one = new Beacon("1");
-    Beacon two = new Beacon("2");
+    //Beacon one = new Beacon("1");
+    //Beacon two = new Beacon("2");
 
-    beacons = Arrays.asList(one, two);
+    //beacons = Arrays.asList(one, two);
+    beacons = new ArrayList<Beacon>();
   }
 
   public List<Beacon> getBeacons() {
     return beacons;
   }
 
-  public Observable<Beacon> getDottie(int dottieIndex) {
-    return Observable.from(beacons.get(dottieIndex));
+  public Observable<Beacon> getBeacon(int beaconIndex) {
+    return Observable.from(beacons.get(beaconIndex));
   }
 
   @dagger.Module(injects = Beacons.class, library = true, complete = false)

@@ -2,7 +2,10 @@ package com.plomb.plomb;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.plomb.plomb.core.Main;
 import com.plomb.plomb.core.MainView;
+import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -40,6 +44,8 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
   @InjectView(R.id.drawer_list) ListView drawerList;
   private DrawerListAdapter drawerListAdapter;
   private Main main;
+  @Inject Bus bus;
+  private BroadcastReceiver listUpdatedReceiver;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,7 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
     Mortar.inject(this, this);
 
     activityScope.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_main);
     ButterKnife.inject(this);
 
@@ -98,6 +105,26 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
     //  }
     //}
     startService(new Intent(this, BluetoothLeService.class));
+    listUpdatedReceiver = new BroadcastReceiver() {
+      @Override public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().contentEquals(BluetoothLeService.ACTION_REFRESH_DEVICE_LIST)) {
+          bus.post(new DeviceListRefreshEvent());
+        }
+      }
+    };
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    bus.register(this);
+    IntentFilter intentFilter = new IntentFilter(BluetoothLeService.ACTION_REFRESH_DEVICE_LIST);
+    registerReceiver(listUpdatedReceiver, intentFilter);
+  }
+
+  @Override protected void onPause() {
+    bus.unregister(this);
+    unregisterReceiver(listUpdatedReceiver);
+    super.onPause();
   }
 
   @Override protected void onSaveInstanceState(Bundle outState) {

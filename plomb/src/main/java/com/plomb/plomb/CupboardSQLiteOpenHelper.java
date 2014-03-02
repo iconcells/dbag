@@ -44,7 +44,7 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
     CupboardFactory.cupboard().withDatabase(db).upgradeTables();
   }
 
-  public void processDevice(BluetoothDevice device, int rssi) {
+  public void processDevice(BluetoothDevice device, int rssi, String name) {
     //first check if the database already has a row
     DeviceSummary deviceSummary = CupboardFactory.cupboard()
         .withDatabase(getReadableDatabase())
@@ -58,7 +58,7 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
       newDevice.lastSeenTime = lastSeenTime;
       newDevice.address = device.getAddress();
       newDevice.rssi = rssi;
-      newDevice.name = device.getName();
+      newDevice.name = name;
       CupboardFactory.cupboard().withDatabase(getWritableDatabase()).put(newDevice);
       //bus.post(new RefreshBluetoothDevicesList());
       context.sendBroadcast(new Intent(BluetoothLeService.ACTION_REFRESH_DEVICE_LIST));

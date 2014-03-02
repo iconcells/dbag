@@ -16,7 +16,8 @@ import model.Beacons;
 import rx.Scheduler;
 import rx.schedulers.ExecutorScheduler;
 
-@Module(injects = BluetoothLeService.class, includes = { Beacons.Module.class }, library = true)
+@Module(injects = { BluetoothLeService.class },
+    includes = { Beacons.Module.class }, library = true)
 public class PlombApplicationModule {
 
   private PlombApplication application;

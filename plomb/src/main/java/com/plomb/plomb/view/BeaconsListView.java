@@ -34,6 +34,9 @@ public class BeaconsListView extends ListView {
   }
 
   public void showBeacons(final List<Beacon> beacons) {
+    if (beacons == null || beacons.size() == 0) {
+      return;
+    }
     Context context = getContext();
     BeaconsListAdapter listAdapter =
         new BeaconsListAdapter(LayoutInflater.from(context), beacons, presenter);
@@ -76,7 +79,17 @@ public class BeaconsListView extends ListView {
         convertView = inflater.inflate(R.layout.beacons_item_view, parent, false);
       }
 
-      ((TextView) convertView).setText(getItem(position).getAddress());
+      //TODO: use ViewHolder
+      Beacon beacon = getItem(position);
+      TextView beaconName = (TextView) convertView.findViewById(R.id.beacon_name_text);
+      beaconName.setText(beacon.getName());
+
+      TextView beaconAddress = (TextView) convertView.findViewById(R.id.beacon_address_text);
+      beaconAddress.setText(beacon.getAddress());
+
+      TextView beaconSignal = (TextView) convertView.findViewById(R.id.beacon_rssi_text);
+      beaconSignal.setText(Integer.toString(beacon.getRssi()));
+
       convertView.setOnClickListener(new OnClickListener() {
         @Override public void onClick(View v) {
           presenter.onBeaconSelected(beacons.get(position));

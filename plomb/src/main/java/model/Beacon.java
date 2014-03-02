@@ -6,9 +6,13 @@ package model;
 public class Beacon {
 
   private String address;
+  private String name;
+  private int rssi;
 
-  public Beacon(String address) {
+  public Beacon(String address, String name, int rssi ) {
     this.address = address;
+    this.name = name;
+    this.rssi = rssi;
   }
 
   public String getAddress() {
@@ -21,5 +25,21 @@ public class Beacon {
 
   @Override public String toString() {
     return address;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public int getRssi() {
+    return rssi;
+  }
+
+  public void setRssi(int rssi) {
+    this.rssi = rssi;
   }
 }

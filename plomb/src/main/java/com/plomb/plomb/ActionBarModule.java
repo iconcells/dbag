@@ -15,6 +15,7 @@
  */
 package com.plomb.plomb;
 
+import com.squareup.otto.Bus;
 import dagger.Provides;
 import javax.inject.Singleton;
 
@@ -22,5 +23,9 @@ import javax.inject.Singleton;
 public class ActionBarModule {
   @Provides @Singleton ActionBarOwner provideActionBarOwner() {
     return new ActionBarOwner();
+  }
+
+  @Provides @Singleton Bus provideBus() {
+    return new AndroidBus();
   }
 }

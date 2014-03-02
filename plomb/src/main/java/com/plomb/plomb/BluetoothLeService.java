@@ -59,9 +59,11 @@ public class BluetoothLeService extends Service
     @Override public void onLeScan(BluetoothDevice bluetoothDevice, int rssi, byte[] bytes) {
 
       //Log.e(TAG, "Bluetooth device: " + bluetoothDevice + " " + bluetoothDevice.getName());
-      if (!TextUtils.isEmpty(bluetoothDevice.getAddress()) && knownDotties.containsKey(
+      if (!TextUtils.isEmpty(bluetoothDevice.getAddress()) && knownBeacons.containsKey(
           bluetoothDevice.getAddress())) {
-        databaseHelper.processDevice(bluetoothDevice, rssi);
+        databaseHelper.processDevice(bluetoothDevice, rssi,
+            knownBeacons.get(bluetoothDevice.getAddress()));
+        Log.d(TAG, "bluetoothDevice: " + bluetoothDevice.getAddress() + " signal: " + rssi);
 
         //StringBuilder advertisement = new StringBuilder();
         //ByteBuffer buffer = ByteBuffer.wrap(bytes);
@@ -94,7 +96,7 @@ public class BluetoothLeService extends Service
   private BluetoothAdapter bluetoothAdapter = null;
   private BluetoothManager bluetoothManager = null;
 
-  private HashMap<String, String> knownDotties = null;
+  private HashMap<String, String> knownBeacons = null;
   private SharedPreferences sharedPreferences;
 
   @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -147,13 +149,18 @@ public class BluetoothLeService extends Service
     updatePreferences();
     instance = this;
     startForeground(NOTIFICATION_ID, buildReadyNotification());
-    knownDotties = new HashMap<String, String>();
-    knownDotties.put("C9:B6:F0:3A:47:A7", "Beacon RF");
-    knownDotties.put("34:B1:F7:D1:40:71", "SensorTag");
-    knownDotties.put("E3:BE:5E:34:67:B9", "Beacon RF");
-    knownDotties.put("A5:42:B4:73:80:B0", "T-9 Beacons");
-    knownDotties.put("F7:37:72:B1:C5:CE", "T-9 Beacons");
-    //knownDotties.put("90:59:AF:17:09:F5", "Glimworm");
+    knownBeacons = new HashMap<String, String>();
+    //knownBeacons.put("C9:B6:F0:3A:47:A7", "Beacon RF");
+    //knownBeacons.put("34:B1:F7:D1:40:71", "SensorTag");
+    //knownBeacons.put("E3:BE:5E:34:67:B9", "Beacon RF");
+    knownBeacons.put("E9:BB:DC:A3:42:9E", "LAX");
+    knownBeacons.put("C1:13:46:6F:46:F7", "SFO");
+    knownBeacons.put("90:59:AF:17:09:F5", "Bag A");
+    knownBeacons.put("84:DD:20:EE:2E:9A", "Bag B");
+    //knownBeacons.put("FA:1A:A1:8A:82:C7", "LAX");
+    //knownBeacons.put("FF:DD:25:E9:B9:E9", "SFO");
+    //knownBeacons.put("D7:65:6C:FD:F0:91", "Bag 1");
+    //knownBeacons.put("D0:BF:45:14:40:E6", "Bag 2");
     state = State.STOPPED;
     initialize();
     //registerReceiver(bluetoothStateReceiver, bluetoothFilter);

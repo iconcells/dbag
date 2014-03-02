@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.util.Log;
 import com.plomb.plomb.ActionBarOwner;
 import com.plomb.plomb.CupboardSQLiteOpenHelper;
+import com.plomb.plomb.DeviceListRefreshEvent;
 import com.plomb.plomb.R;
 import com.plomb.plomb.core.Main;
 import com.plomb.plomb.view.BeaconsListView;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import dagger.Provides;
 import flow.Flow;
 import flow.Layout;
@@ -45,6 +48,8 @@ public class BeaconsListScreen implements Blueprint {
     private final List<Beacon> beacons;
     private final ActionBarOwner actionBarOwner;
     @Inject CupboardSQLiteOpenHelper databaseHelper;
+    @Inject Bus bus;
+    boolean registered;
 
     @Inject Presenter(Flow flow, List<Beacon> beacons, ActionBarOwner actionBarOwner) {
       this.flow = flow;
@@ -63,10 +68,21 @@ public class BeaconsListScreen implements Blueprint {
       boolean drawerEnabled = true;
       String title = "Beacon List";
       actionBarOwner.setConfig(new ActionBarOwner.Config(true, hasUp, drawerEnabled, title, null));
+      bus.register(this);
+      registered = true;
+    }
+
+    @Override protected void onSave(Bundle outState) {
+      super.onSave(outState);
+      if (registered) {
+        bus.unregister(this);
+      }
     }
 
     public void onBeaconSelected(Beacon beacon) {
       Log.d(TAG, "Flowing to BeaconScreen");
+      bus.unregister(this);
+      registered = true;
       flow.goTo(new BeaconScreen(beacon));
     }
 
@@ -74,9 +90,13 @@ public class BeaconsListScreen implements Blueprint {
       List<Beacon> beacons = new ArrayList<Beacon>();
       List<DeviceSummary> devices = databaseHelper.getDevices();
       for (DeviceSummary device : devices) {
-        beacons.add(new Beacon(device.address));
+        beacons.add(new Beacon(device.address, device.name, device.rssi));
       }
       getView().showBeacons(beacons);
+    }
+
+    @Subscribe public void onBeaconListRefreshed(DeviceListRefreshEvent event) {
+      onBeaconListRefreshed();
     }
   }
 }

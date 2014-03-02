@@ -7,6 +7,7 @@ import com.plomb.plomb.ActionBarOwner;
 import com.plomb.plomb.R;
 import com.plomb.plomb.core.Main;
 import com.plomb.plomb.view.BeaconView;
+import com.squareup.otto.Bus;
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
@@ -55,11 +56,13 @@ public class BeaconScreen implements HasParent<BeaconsListScreen>, Blueprint {
     private final Beacon beacon;
     private final ActionBarOwner actionBarOwner;
     private final Flow flow;
+    private Bus bus;
 
-    @Inject Presenter(Beacon beacon, Flow flow, ActionBarOwner actionBarOwner) {
+    @Inject Presenter(Beacon beacon, Flow flow, ActionBarOwner actionBarOwner, Bus bus) {
       this.beacon = beacon;
       this.flow = flow;
       this.actionBarOwner = actionBarOwner;
+      this.bus = bus;
     }
 
     @Override protected void onLoad(Bundle savedInstanceState) {
@@ -75,6 +78,12 @@ public class BeaconScreen implements HasParent<BeaconsListScreen>, Blueprint {
           new ActionBarOwner.Config(true, hasUp, drawerEnabled, title, createMenuActions()));
 
       view.setBeaconText(beacon.getAddress());
+      bus.register(this);
+    }
+
+    @Override protected void onSave(Bundle outState) {
+      super.onSave(outState);
+      bus.unregister(this);
     }
 
     public ArrayList<ActionBarOwner.MenuAction> createMenuActions() {
