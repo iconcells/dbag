@@ -22,7 +22,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -248,10 +247,10 @@ public class BluetoothLeService extends Service
       state = State.STOPPED;
     }
   }
-
-  @Override public int onStartCommand(Intent intent, int flags, int startId) {
-    return START_STICKY;
-  }
+  //
+  //@Override public int onStartCommand(Intent intent, int flags, int startId) {
+  //  return START_STICKY;
+  //}
 
   public void updatePreferences() {
     scanDuration =

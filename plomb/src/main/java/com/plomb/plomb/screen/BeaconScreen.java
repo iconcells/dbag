@@ -19,9 +19,6 @@ import model.Beacons;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import rx.util.functions.Action0;
-//import rx.Subscription;
-//import rx.util.functions.Action0;
-//import rx.util.functions.Action1;
 
 @Layout(R.layout.beacon_view)
 public class BeaconScreen implements HasParent<BeaconsListScreen>, Blueprint {
@@ -77,19 +74,7 @@ public class BeaconScreen implements HasParent<BeaconsListScreen>, Blueprint {
       actionBarOwner.setConfig(
           new ActionBarOwner.Config(true, hasUp, drawerEnabled, title, createMenuActions()));
 
-      //dottie.subscribe(new Action1<Beacon>() {
-      //  @Override public void call(Beacon dottie) {
-      //    BeaconView view = getView();
-      //    if (view == null) {
-      //      return;
-      //    }
-      //    Presenter.this.dottie = dottie;
-
       view.setBeaconText(beacon.getAddress());
-
-      //});
-      //Presenter.this.dottie = dottie;
-      //view.setDottieText(dottie.getAddress());
     }
 
     public ArrayList<ActionBarOwner.MenuAction> createMenuActions() {

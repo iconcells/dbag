@@ -78,26 +78,31 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
     ArrayList<Long> devicesToRemove = new ArrayList<Long>();
 
     //get the cursor for this query
-    QueryResultIterable<DeviceSummary> itr = CupboardFactory.cupboard()
-        .withDatabase(getReadableDatabase())
-        .query(DeviceSummary.class)
-        .query();
+    //QueryResultIterable<DeviceSummary> itr = CupboardFactory.cupboard()
+    //    .withDatabase(getReadableDatabase())
+    //    .query(DeviceSummary.class)
+    //    .query();
 
     Cursor cursor = CupboardFactory.cupboard()
         .withDatabase(getReadableDatabase())
         .query(DeviceSummary.class)
         .getCursor();
-    //try {
-      for (DeviceSummary device : itr) {
-        if (currentTime - device.lastSeenTime > pruneTime) {
-          devicesToRemove.add(device._id);
+    //TODO: fix this code block.
+    try {
+      int lastSeenTimeIndex = cursor.getColumnIndex("lastSeenTime");
+      int _idIndex = cursor.getColumnIndex("_id");
+      //for (DeviceSummary device : itr) {
+      while (cursor.moveToNext()) {
+        long lastSeenTime = cursor.getLong(lastSeenTimeIndex);
+        long _id = cursor.getLong(_idIndex);
+        if (currentTime - lastSeenTime > pruneTime) {
+          devicesToRemove.add(_id);
         }
       }
-    //} catch (Exception e) {
-    //}finally
-    //{
-    //  cursor.close();
-    //}
+    } catch (Exception e) {
+    } finally {
+      cursor.close();
+    }
 
     boolean updated = false;
     for (Long id : devicesToRemove) {
@@ -106,6 +111,7 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
           .withDatabase(getWritableDatabase())
           .delete(DeviceSummary.class, id);
     }
+
     if (updated) {
       //do something
       //need to notify data set changed for listviews
