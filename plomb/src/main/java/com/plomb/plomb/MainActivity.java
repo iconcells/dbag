@@ -21,8 +21,11 @@ import butterknife.InjectView;
 import com.plomb.plomb.core.Main;
 import com.plomb.plomb.core.MainView;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
+import model.DeviceSummary;
 import mortar.Mortar;
 import mortar.MortarActivityScope;
 import mortar.MortarContext;
@@ -45,6 +48,7 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
   private DrawerListAdapter drawerListAdapter;
   private Main main;
   @Inject Bus bus;
+  //@Inject CupboardSQLiteOpenHelper databaseHelper;
   private BroadcastReceiver listUpdatedReceiver;
 
   @Override
@@ -61,8 +65,8 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
     MortarScope parentScope = ((PlombApplication) getApplication()).getRootScope();
     activityScope = Mortar.requireActivityScope(parentScope, main);
     Mortar.inject(this, this);
-
     activityScope.onCreate(savedInstanceState);
+    //((PlombApplication) getApplication()).inject(this);
 
     setContentView(R.layout.activity_main);
     ButterKnife.inject(this);
@@ -104,7 +108,7 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
     //    }
     //  }
     //}
-    startService(new Intent(this, BluetoothLeService.class));
+
     listUpdatedReceiver = new BroadcastReceiver() {
       @Override public void onReceive(Context context, Intent intent) {
         if (intent.getAction().contentEquals(BluetoothLeService.ACTION_REFRESH_DEVICE_LIST)) {
@@ -139,7 +143,9 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
       activityScope.destroy();
       activityScope = null;
     }
-    stopService(new Intent(this, BluetoothLeService.class));
+    if (BluetoothLeService.isRunning()) {
+      stopService(new Intent(this, BluetoothLeService.class));
+    }
     super.onDestroy();
   }
 
@@ -237,5 +243,13 @@ public class MainActivity extends Activity implements MortarContext, ActionBarOw
     super.onPostCreate(savedInstanceState);
     // Sync the toggle state after onRestoreInstanceState has occurred.
     drawerToggle.syncState();
+  }
+
+  @Subscribe public void onStartService(StartServiceEvent event) {
+    startService(new Intent(this, BluetoothLeService.class));
+  }
+
+  @Subscribe public void onStopService(StopServiceEvent event) {
+    stopService(new Intent(this, BluetoothLeService.class));
   }
 }

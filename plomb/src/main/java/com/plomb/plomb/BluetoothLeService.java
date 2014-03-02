@@ -148,7 +148,7 @@ public class BluetoothLeService extends Service
     sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     updatePreferences();
     instance = this;
-    startForeground(NOTIFICATION_ID, buildReadyNotification());
+    //startForeground(NOTIFICATION_ID, buildReadyNotification());
     knownBeacons = new HashMap<String, String>();
     //knownBeacons.put("C9:B6:F0:3A:47:A7", "Beacon RF");
     //knownBeacons.put("34:B1:F7:D1:40:71", "SensorTag");
@@ -254,7 +254,7 @@ public class BluetoothLeService extends Service
       state = State.STOPPED;
     }
   }
-  //
+
   //@Override public int onStartCommand(Intent intent, int flags, int startId) {
   //  return START_STICKY;
   //}
@@ -268,22 +268,22 @@ public class BluetoothLeService extends Service
     updateTimer();
   }
 
-  @TargetApi(19) @Override public void onTaskRemoved(Intent rootIntent) {
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
-      restartServiceIntent.setPackage(getPackageName());
-
-      PendingIntent restartServicePendingIntent =
-          PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent,
-              PendingIntent.FLAG_ONE_SHOT);
-      AlarmManager alarmService =
-          (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-      alarmService.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
-          restartServicePendingIntent);
-    }
-    super.onTaskRemoved(rootIntent);
-  }
+  //@TargetApi(19) @Override public void onTaskRemoved(Intent rootIntent) {
+  //
+  //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+  //    Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+  //    restartServiceIntent.setPackage(getPackageName());
+  //
+  //    PendingIntent restartServicePendingIntent =
+  //        PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent,
+  //            PendingIntent.FLAG_ONE_SHOT);
+  //    AlarmManager alarmService =
+  //        (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+  //    alarmService.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
+  //        restartServicePendingIntent);
+  //  }
+  //  super.onTaskRemoved(rootIntent);
+  //}
 
   private void updateTimer() {
     if (isEnabled) {

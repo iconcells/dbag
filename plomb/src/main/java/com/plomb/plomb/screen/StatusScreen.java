@@ -10,6 +10,8 @@ import com.plomb.plomb.CupboardSQLiteOpenHelper;
 import com.plomb.plomb.DeviceListRefreshEvent;
 import com.plomb.plomb.LuggageOnPlaneEvent;
 import com.plomb.plomb.R;
+import com.plomb.plomb.StartServiceEvent;
+import com.plomb.plomb.StopServiceEvent;
 import com.plomb.plomb.core.Main;
 import com.plomb.plomb.view.StatusView;
 import com.squareup.otto.Bus;
@@ -93,15 +95,15 @@ public class StatusScreen implements Blueprint {
     public ArrayList<ActionBarOwner.MenuAction> createMenuActions() {
       ArrayList<ActionBarOwner.MenuAction> actions = new ArrayList<>();
       ActionBarOwner.MenuAction menu =
-          new ActionBarOwner.MenuAction("Beacon", MenuItem.SHOW_AS_ACTION_NEVER, new Action0() {
+          new ActionBarOwner.MenuAction("Start", MenuItem.SHOW_AS_ACTION_NEVER, new Action0() {
             @Override public void call() {
-              getView().toast("Beacons action selected");
+              bus.post(new StartServiceEvent());
             }
           });
       ActionBarOwner.MenuAction menu2 =
-          new ActionBarOwner.MenuAction("Second", MenuItem.SHOW_AS_ACTION_NEVER, new Action0() {
+          new ActionBarOwner.MenuAction("Stop", MenuItem.SHOW_AS_ACTION_NEVER, new Action0() {
             @Override public void call() {
-              getView().toast("Second menu item selected");
+              bus.post(new StopServiceEvent());
             }
           });
       actions.add(menu);

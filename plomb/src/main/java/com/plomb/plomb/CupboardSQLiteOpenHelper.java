@@ -72,8 +72,9 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
 
   public void pruneDevices() {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    long pruneTime =
-        Integer.parseInt(sharedPreferences.getString("preference_time_before_prune", "3000"));
+    //long pruneTime =
+    //    Integer.parseInt(sharedPreferences.getString("preference_time_before_prune", "5000"));
+    long pruneTime = 5000;
     long currentTime = System.currentTimeMillis();
     ArrayList<Long> devicesToRemove = new ArrayList<Long>();
 
