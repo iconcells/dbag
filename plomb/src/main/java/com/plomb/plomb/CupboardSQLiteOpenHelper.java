@@ -62,7 +62,7 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
       CupboardFactory.cupboard().withDatabase(getWritableDatabase()).put(newDevice);
       //bus.post(new RefreshBluetoothDevicesList());
       context.sendBroadcast(new Intent(BluetoothLeService.ACTION_REFRESH_DEVICE_LIST));
-    } else if (lastSeenTime - deviceSummary.lastSeenTime > 500) {
+    } else if (lastSeenTime - deviceSummary.lastSeenTime > 250) {
       deviceSummary.rssi = rssi;
       deviceSummary.lastSeenTime = lastSeenTime;
       CupboardFactory.cupboard().withDatabase(getWritableDatabase()).put(deviceSummary);
@@ -73,7 +73,7 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
   public void pruneDevices() {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     long pruneTime =
-        Integer.parseInt(sharedPreferences.getString("preference_time_before_prune", "8000"));
+        Integer.parseInt(sharedPreferences.getString("preference_time_before_prune", "3000"));
     long currentTime = System.currentTimeMillis();
     ArrayList<Long> devicesToRemove = new ArrayList<Long>();
 

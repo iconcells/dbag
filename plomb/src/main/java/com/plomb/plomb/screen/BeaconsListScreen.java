@@ -82,7 +82,7 @@ public class BeaconsListScreen implements Blueprint {
     public void onBeaconSelected(Beacon beacon) {
       Log.d(TAG, "Flowing to BeaconScreen");
       bus.unregister(this);
-      registered = true;
+      registered = false;
       flow.goTo(new BeaconScreen(beacon));
     }
 
