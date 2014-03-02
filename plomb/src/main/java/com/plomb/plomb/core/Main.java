@@ -68,6 +68,7 @@ public class Main implements Blueprint {
           case 1:
             super.showScreen(new BeaconsListScreen(), null);
             this.position = position;
+            break;
           case 2:
             super.showScreen(new ProfileScreen(), null);
             this.position = position;

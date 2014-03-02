@@ -120,15 +120,44 @@ public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
   }
 
   public List<DeviceSummary> getDevices() {
-    QueryResultIterable<DeviceSummary> devices = CupboardFactory.cupboard()
+
+    Cursor cursor = CupboardFactory.cupboard()
         .withDatabase(getReadableDatabase())
         .query(DeviceSummary.class)
-        .orderBy("rssi desc")
-        .query();
+        .orderBy("rssi desc").getCursor();
+        //.query();
     ArrayList<DeviceSummary> outgoingDevices = new ArrayList<DeviceSummary>();
-    for (DeviceSummary device : devices) {
-      outgoingDevices.add(device);
+
+    try {
+      int lastSeenTimeIndex = cursor.getColumnIndex("lastSeenTime");
+      int addressIndex = cursor.getColumnIndex("address");
+      int nameIndex = cursor.getColumnIndex("name");
+      int rssiIndex = cursor.getColumnIndex("rssi");
+      int _idIndex = cursor.getColumnIndex("_id");
+      //for (DeviceSummary device : itr) {
+      while (cursor.moveToNext()) {
+        long lastSeenTime = cursor.getLong(lastSeenTimeIndex);
+        long _id = cursor.getLong(_idIndex);
+        String address = cursor.getString(addressIndex);
+        String name = cursor.getString(nameIndex);
+        int rssi = cursor.getInt(rssiIndex);
+        DeviceSummary device = new DeviceSummary();
+        device.lastSeenTime = lastSeenTime;
+        device._id = _id;
+        device.rssi = rssi;
+        device.name = name;
+        device.address = address;
+        outgoingDevices.add(device);
+
+      }
+    } catch (Exception e) {
+    } finally {
+      cursor.close();
     }
+
+    //for (DeviceSummary device : devices) {
+    //  outgoingDevices.add(device);
+    //}
 
     return outgoingDevices;
   }

@@ -68,8 +68,8 @@ public class BeaconsListScreen implements Blueprint {
       boolean drawerEnabled = true;
       String title = "Beacon List";
       actionBarOwner.setConfig(new ActionBarOwner.Config(true, hasUp, drawerEnabled, title, null));
-      //bus.register(this);
-      //registered = true;
+      bus.register(this);
+      registered = true;
     }
 
     @Override protected void onSave(Bundle outState) {
