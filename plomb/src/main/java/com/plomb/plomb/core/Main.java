@@ -62,15 +62,18 @@ public class Main implements Blueprint {
       if (this.position != position) {
         switch (position) {
           case 0:
-            super.showScreen(new StatusScreen(), null);
+            getFlow().replaceTo(new StatusScreen());
+            //super.showScreen(new StatusScreen(), null);
             this.position = position;
             break;
           case 1:
-            super.showScreen(new BeaconsListScreen(), null);
+            getFlow().replaceTo(new BeaconsListScreen());
+            //super.showScreen(new BeaconsListScreen(), null);
             this.position = position;
             break;
           case 2:
-            super.showScreen(new ProfileScreen(), null);
+            getFlow().replaceTo(new ProfileScreen());
+            //super.showScreen(new ProfileScreen(), null);
             this.position = position;
             break;
           default:

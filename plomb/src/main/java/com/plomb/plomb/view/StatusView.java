@@ -17,7 +17,7 @@ import mortar.Mortar;
  * Created by dberrios on 2/21/14.
  */
 public class StatusView extends LinearLayout {
-  public static final String TAG = BeaconView.class.getSimpleName();
+  public static final String TAG = StatusView.class.getSimpleName();
   @Inject StatusScreen.Presenter presenter;
 
   public StatusView(Context context, AttributeSet attrs) {
