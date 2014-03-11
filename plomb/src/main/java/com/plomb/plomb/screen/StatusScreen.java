@@ -23,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import model.DeviceSummary;
+import model.Status;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import rx.util.functions.Action0;
@@ -111,52 +112,16 @@ public class StatusScreen implements Blueprint {
       return actions;
     }
 
-    @Subscribe public void onCheckinConditionsMet(CheckinEvent event) {
-      getView().showCheckinText();
-    }
 
-    @Subscribe public void onDeviceListRefresh(DeviceListRefreshEvent event) {
-      List<DeviceSummary> devices = databaseHelper.getDevices();
-      if (checkinConditionsMet(devices)) {
-        bus.post(new CheckinEvent());
-      }
-      //if (checkLuggageOnPlane(devices)) {
-      //  bus.post(new LuggageOnPlaneEvent());
-      //}
-      //if (checkDepartedLAX(devices)) {
-      //  bus.post(new DepartedLAXEvent());
-      //}
-      //if (checkArrivedSFO(devices)) {
-      //  bus.post(new ArrivedSFOEvent());
-      //}
-      //if (checkLuggageLost(devices)) {
-      //  bus.post(new LuggageLostEvent());
-      //}
-    }
 
-    private boolean checkinConditionsMet(List<DeviceSummary> devices) {
-      int lax,sfo, a, b;
-      lax = sfo = a = b = -1000;
-      for (DeviceSummary device: devices) {
-        if (device.name.contentEquals(Constants.LAX_ADDRESS)) {
-          lax = device.rssi;
-        } else if (device.name.contentEquals(Constants.SFO_ADDRESS)) {
-          sfo = device.rssi;
-        } else if (device.name.contentEquals(Constants.BAG_A)) {
-          a = device.rssi;
-        } else if (device.name.contentEquals(Constants.BAG_B)) {
-          b = device.rssi;
-        }
-      }
+     public void onStatusSelected(int position){
 
-      if (lax > -75 && sfo < -90 && a > -60 && b > -50) {
-        return true;
-      }
-      //LAX is close > -75
-      //SFO is far < -90
-      //BAG A is close > -60
-      //BAG B is close > -50
-      return false;
-    }
+
+
+     }
+
+
+
+
   }
 }
